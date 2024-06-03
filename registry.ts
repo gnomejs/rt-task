@@ -22,7 +22,7 @@ function ensureSet() {
  * @param id - The ID of the module.
  * @param module - The task module to prepend to the registry.
  */
-export function prependRegister(id: string, module: TaskModule): boolean {
+export function prependRegisterTask(id: string, module: TaskModule): boolean {
     const set = ensureSet();
     const index = set.findIndex((mod) => mod.id === id);
     if (index === 0) {
@@ -44,7 +44,7 @@ export function prependRegister(id: string, module: TaskModule): boolean {
  * If a module with the same ID already exists, it will be replaced with the new module.
  * @param module - The task module to register.
  */
-export function register(module: TaskModule) {
+export function registerTask(module: TaskModule) {
     const set = ensureSet();
 
     const index = set.findIndex((mod) => mod.id === module.id);
@@ -62,7 +62,7 @@ export function register(module: TaskModule) {
  * @param node - The node to match against.
  * @returns An object containing the matching task module and task, or undefined if no match is found.
  */
-export function findByNode(node: Record<string, unknown>): { mod: TaskModule; task: Task } | undefined {
+export function findTaskByNode(node: Record<string, unknown>): { mod: TaskModule; task: Task } | undefined {
     const set = ensureSet();
     for (const mod of set) {
         if (!mod.parseNode) {
@@ -84,7 +84,7 @@ export function findByNode(node: Record<string, unknown>): { mod: TaskModule; ta
  * @param task - The task to match against.
  * @returns The matching TaskModule, or undefined if no match is found.
  */
-export function findByType(task: Task): TaskModule | undefined {
+export function findTaskByType(task: Task): TaskModule | undefined {
     const set = ensureSet();
     for (const mod of set) {
         if (!mod.match) {
@@ -102,7 +102,7 @@ export function findByType(task: Task): TaskModule | undefined {
  * @param id - The ID of the module to find.
  * @returns The found TaskModule, or undefined if not found.
  */
-export function findModule(id: string): TaskModule | undefined {
+export function findTaskModule(id: string): TaskModule | undefined {
     const set = ensureSet();
     return set.find((mod) => mod.id === id);
 }

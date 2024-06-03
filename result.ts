@@ -60,11 +60,18 @@ export class TaskResult implements TaskResultMeta {
      * @param outputs - Optional. The outputs of the task.
      * @param error - Optional. The error that occurred during the task.
      */
-    end(status: TaskStatus, outputs?: Record<string, unknown>, error?: Error): this {
+    end(status?: TaskStatus, outputs?: Record<string, unknown>, error?: unknown): this {
         this.endAt = new Date();
-        this.status = status;
+        this.status = status ?? 'ok';
         this.outputs = outputs;
-        this.error = error;
+        if (error instanceof Error) {
+            this.error = error;
+        } else if (typeof error === 'string') {
+            this.error = new Error(error);
+        } else {
+            this.error = new Error('An error occurred during task execution: ' + String(error));
+        }
+
         return this;
     }
 }

@@ -1,4 +1,4 @@
-# @rt/message-bus
+# @rt/task
 
 <div height=30" vertical-align="top">
 <image src="https://raw.githubusercontent.com/gnomejs/gnomejs/main/assets/icon.png"
@@ -8,34 +8,41 @@
 
 ## Overview
 
-A simple message bus used for swapping out formatting for messages
-in cli applications.  This module exists primarily for the rt ("run-task")
-cli.
+The core tasks primitives for rt that enables creating
+custom tasks.
 
 ## Basic Usage
 
 ```typescript
-import { Message, DefaultMessageBus } from str from '@rt/message-bus'
+import { 
+    TaskBase, 
+    TaskResult,
+    registerTask, 
+    type Task, 
+    type TaskExecutionContext
+} from str from '@rt/task'
 
-const bus = new DefaultMessageBus();
-
-export class WriteMessage extends Message {
-    constructor(public message: string) {
-        super("write")
-    }
+export class SimpleTask extends TaskBase {
+    run: (ctx: TaskExecutionContext) => Promise<void>
 }
 
-const messages: Message[] = [];
-bus.addListener((message) => {
-    messages.push(message);
+registerTask({
+    id: "simple-task",
+    match: function(task: Task) {
+        return task instanceof SimpleTask
+    },
+    handler: async (ctx) => {
+        const task = ctx.task as SimpleTask
+        const result = new TaskResult(task);
+        result.start();
+        try {
+            await task.run(ctx);
+            return result.end();
+        } catch(e) {
+            return result.end('error', {}, e);
+        }
+    }
 });
-
-bus.send(new WriteMessage("test"));
-
-console.log(messages.length);
-console.log(messages[0].kind);
-console.log((messages[0] as WriteMessage).message);
-
 ```
 
 [MIT License](./LICENSE.md)
